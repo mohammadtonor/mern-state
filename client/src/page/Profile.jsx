@@ -13,6 +13,7 @@ import {
   signOutfailure,
   signOutSuccess
 }from './../redux/user/userSlice';
+import {Link} from 'react-router-dom';
 
 // allow read;
 // allow write: if 
@@ -166,9 +167,14 @@ export const Profile = () => {
         />
         
         <button
-           className='bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-85 text-lg font-semibold'>
+           className='bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-85 text-md font-semibold'>
             {loading ? "loading..." : "Update"}
         </button>
+        <Link 
+          to='/create-listing' 
+          className='bg-green-600 text-white rounded-lg uppercase hover:opacity-85 p-3 text-center text-md font-semibold'>
+            Create Lising
+          </Link>
       </form>
       <div className='flex justify-between items-center mt-4'>
         <span onClick={handleDelete} className='text-red-700 cursor-pointer text-md font-semibold'>Delete acount</span>
