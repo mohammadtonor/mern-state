@@ -30,7 +30,6 @@ export const SignUp = () => {
     } catch (error) {
       setLoading(false);
       setError(data.message);
-      
     }
   }
 
