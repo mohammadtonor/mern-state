@@ -5,12 +5,16 @@ import SwiperCore from 'swiper';
 import {Navigation} from 'swiper/modules';
 import 'swiper/css/bundle';
 import {FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare} from 'react-icons/fa'
+import {useSelector} from 'react-redux';
+import Contact from "../components/Contact";
 
 const Listing = () => {
   SwiperCore.use([Navigation]);
+  const {currentUser} = useSelector(state => state.user);
   const { listingId } = useParams();
   const [listing, setListing] = useState(null);
   const [error, setError] = useState(false);
+  const [contact, setContact] = useState();
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -34,9 +38,9 @@ const Listing = () => {
     }
 
     fetchListing();
-  }, [])
+  }, []);
 
-  return (
+   return (
     <main>
         {loading && <p className="text-center">Loading...</p>}
         {error && <p className="text-center">Something went wrong.</p>}
@@ -116,6 +120,12 @@ const Listing = () => {
                             {listing.furnished ? "Furnishad" : "No Furnished"}
                         </li>
                     </ul>
+                    {currentUser && listing.userRef !== currentUser._id && !contact &&
+                        <button onClick={() => setContact(true)} className="bg-slate-700 rounded-lg p-3 text-white uppercase">
+                            Contact landlord
+                        </button>
+                    }
+                    {contact && <Contact listing={listing}/>}
                 </div>
             </>
         )}
@@ -123,4 +133,4 @@ const Listing = () => {
   )
 }
 
-export default Listing
+export default Listing 
