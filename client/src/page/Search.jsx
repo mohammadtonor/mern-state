@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom';
 import {FaLockOpen, FaSpider} from 'react-icons/fa'
+import ListingItem from '../components/ListingItem';
 
 const Search = () => {
   const navigaete = useNavigate();
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   const [sidebarDate, setSidebarData] = useState({
     searchTerm: '',
     type: 'all',
@@ -48,6 +50,7 @@ const Search = () => {
 
     const fetchListing = async () => {
         setLoading(true);
+        setShowMore(false);
         const searchQuery = urlParams.toString();
         const res = await fetch(`/api/listing/get?${searchQuery}`);
         const data = await res.json();
@@ -93,8 +96,22 @@ const Search = () => {
 
   }
 
+  const onShowMoreClick =async () => {
+    const numberofListing = listings.lenght;
+    const startIndex = numberofListing;
+    const urlParams = new  URLSearchParams(loading.search);
+    urlParams.get('startIndex', startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.lenght < 9 ) {
+        setShowMore(false);
+    }
+    setListings([...listings,...data]);
+  }
+
   return (
-    <div className='grid grid-cols-1 md:grid-cols-[2fr_3fr] lg:col-span-[3fr_5fr] max-w-6xl mx-auto'>
+    <div className='grid grid-cols-1 md:grid-cols-[2fr_3fr] lg:grid-cols-[2fr_5fr]  mx-2'>
         <div className='p-7 border-b-2 md:border-r-2 md:min-h-screen'>
             <form onSubmit={handleSubmit} className='flex flex-col gap-7'>
                 <div className='flex items-center gap-2 '>
@@ -177,10 +194,22 @@ const Search = () => {
                 <FaLockOpen className='text-white/40 w-20 h-20'/>
             </div>
         )}
-        <div className=''>
+        <div className='w-full'>
             <h1 className='text-2xl font-semibold text-slate-700 mt-5 p-3'>
                 Listing Result
             </h1> 
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3  gap-4 p-4'>
+                {!loading && listings.length === 0 && (
+                    <p className=' text-slate-700 text-md font-semibold mt-5 p-3'>
+                        No results found
+                    </p>
+                )}
+
+                {!loading && listings && listings.map((listing) => (
+                    <ListingItem listing={listing}/>
+                ))}
+            </div>
+                {showMore && <div className='text-center w-full'><button onClick={onShowMoreClick} className='text-center text-green-700'>Show More</button></div>}
         </div>
     </div>
   )
